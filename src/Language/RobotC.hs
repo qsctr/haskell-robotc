@@ -3,7 +3,7 @@ module Language.RobotC where
 import Language.RobotC.Data.Types
 import Language.RobotC.Data.Program
 import Language.RobotC.Data.Config
-import Language.RobotC.Basic
+import Language.RobotC.Syntax
 
 -- config =
 --     [ Motor frontLeft  Motor393Turbo Normal   WithNoEncoder

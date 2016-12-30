@@ -1,18 +1,14 @@
 {-# LANGUAGE GADTs, OverloadedStrings, StandaloneDeriving #-}
 
 module Language.RobotC.Data.Program
-    ( Program
-    , Prog
-    , RobotC
-    , R
+    ( Program, Prog
+    , RobotC, R
     , Stmt (..)
     , Expr (..)
     , Var (..)
     , ArrayVar (..)
     , IndexVar (..)
-    , Ident
-    , unIdent
-    , mkIdent
+    , Ident, unIdent, mkIdent
     ) where
 
 import Control.Monad.Trans.Writer
@@ -35,6 +31,13 @@ data Stmt where
     Call3v :: Ident -> Expr a -> Expr b -> Expr c -> Stmt
     Assign :: Var t -> Expr t -> Stmt
     IndexAssign :: IndexVar t -> Expr t -> Stmt
+    AddAssign, SubAssign, MultAssign :: (Num t) => Var t -> Expr t -> Stmt
+    IntDivAssign :: (Integral t) => Var t -> Expr t -> Stmt
+    FracDivAssign :: (Fractional t) => Var t -> Expr t -> Stmt
+    ModAssign :: (Integral t) => Var t -> Expr t -> Stmt
+    BitAndAssign, BitOrAssign, BitXorAssign :: (Integral t) => Var t -> Expr t -> Stmt
+    LShiftAssign, RShiftAssign :: (Integral t) => Var t -> Expr t -> Stmt
+    Incr, Decr :: (Num t) => Var t -> Stmt
     Dec :: Var t -> Expr t -> Stmt
     ArrayDec :: ArrayVar t -> [Expr t] -> Stmt
     While :: Expr Bool -> Stmt -> Stmt
@@ -46,17 +49,16 @@ deriving instance Show Stmt
 data Expr t where
     Lit :: (RType t) => t -> Expr t
     NotExpr :: Expr Bool -> Expr Bool
-    AndExpr :: Expr Bool -> Expr Bool -> Expr Bool
-    OrExpr :: Expr Bool -> Expr Bool -> Expr Bool
-    EqExpr :: Expr t -> Expr t -> Expr Bool
-    LTExpr :: (Num t) => Expr t -> Expr t -> Expr Bool
-    GTExpr :: (Num t) => Expr t -> Expr t -> Expr Bool
-    AddExpr :: (Num t) => Expr t -> Expr t -> Expr t
-    SubExpr :: (Num t) => Expr t -> Expr t -> Expr t
-    MultExpr :: (Num t) => Expr t -> Expr t -> Expr t
+    AndExpr, OrExpr :: Expr Bool -> Expr Bool -> Expr Bool
+    EqExpr, NotEqExpr :: Expr t -> Expr t -> Expr Bool
+    LTExpr, LTEqExpr, GTExpr, GTEqExpr :: (Num t) => Expr t -> Expr t -> Expr Bool
+    AddExpr, SubExpr, MultExpr :: (Num t) => Expr t -> Expr t -> Expr t
     IntDivExpr :: (Integral t) => Expr t -> Expr t -> Expr t
     FracDivExpr :: (Fractional t) => Expr t -> Expr t -> Expr t
+    ModExpr :: (Integral t) => Expr t -> Expr t -> Expr t
     NegExpr :: (Num t) => Expr t -> Expr t
+    BitAndExpr, BitOrExpr, BitXorExpr :: (Integral t) => Expr t -> Expr t -> Expr t
+    LShiftExpr, RShiftExpr :: (Integral t) => Expr t -> Expr t -> Expr t
     VarExpr :: Var t -> Expr t
     IndexVarExpr :: IndexVar t -> Expr t
     Call0 :: Ident -> Expr t

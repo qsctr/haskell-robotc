@@ -9,9 +9,7 @@ module Language.RobotC.Data.Types
     , UShort
     , RInt
     , UInt
-    , RString
-    , mkRString
-    , unRString
+    , RString, mkRString, unRString
     , MotorPort (..)
     , AnalogPort (..)
     , DigitalPort (..)

@@ -20,7 +20,7 @@ library
                      , Language.RobotC.Data.Config
                      , Language.RobotC.Data.Program
                      , Language.RobotC.Data.Types
-                     , Language.RobotC.Basic
+                     , Language.RobotC.Syntax
                      , Language.RobotC.Utils
   build-depends:       base >= 4.7 && < 5
                      , transformers
