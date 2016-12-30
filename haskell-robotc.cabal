@@ -1,0 +1,32 @@
+name:                haskell-robotc
+version:             0.1.0.0
+synopsis:            Simple project template from stack
+description:         Please see README.md
+homepage:            https://github.com/qsctr/haskell-robotc
+license:             MIT
+license-file:        LICENSE
+author:              Bretton
+maintainer:          brettonchen@gmail.com
+copyright:           2016 Bretton
+category:            Language
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     Language.RobotC
+  other-modules:       Language.RobotC.Data.Code
+                     , Language.RobotC.Data.Config
+                     , Language.RobotC.Data.Program
+                     , Language.RobotC.Data.Types
+                     , Language.RobotC.Basic
+                     , Language.RobotC.Utils
+  build-depends:       base >= 4.7 && < 5
+                     , transformers
+  default-language:    Haskell2010
+  ghc-options:         -Wall
+
+source-repository head
+  type:     git
+  location: https://github.com/qsctr/haskell-robotc
