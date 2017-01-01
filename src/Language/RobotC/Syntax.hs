@@ -9,17 +9,15 @@ module Language.RobotC.Syntax
     , rdiv, rmod
     , (&), (.&), (.|), (.^)
     , (<<), (.<<), (.>>)
-    , var
-    , vari
+    , var, vari
     , (?)
-    , (.:)
-    , (#:)
-    , (.=)
-    , (#=)
+    , (.:), (#:)
+    , (.=), (#=)
     , (+=), (-=), (*=)
     , divEq, modEq
     , (./=)
     , (&=), (|=), (^=), (<<=), (.<<=), (.>>=)
+    , incr, decr
     , while
     , rif
     , rifelse
@@ -130,6 +128,10 @@ infix 0 ./=
 (.<<=) = (<<=)
 (.>>=) = prog2 RShiftAssign
 infix 0 &=, |=, ^=, <<=, .<<=, .>>=
+
+incr, decr :: (Num t) => Var t -> Prog
+incr = prog1 Incr
+decr = prog1 Decr
 
 while :: R Bool -> Prog -> Prog
 while = liftProg1 . While
