@@ -1,4 +1,9 @@
-module Language.RobotC where
+module Language.RobotC
+    ( module Language.RobotC.Data.Types
+    , module Language.RobotC.Data.Program
+    , module Language.RobotC.Data.Config
+    , module Language.RobotC.Syntax
+    ) where
 
 import Language.RobotC.Data.Types
 import Language.RobotC.Data.Program
