@@ -1,4 +1,4 @@
-{-# LANGUAGE GADTs, OverloadedStrings, StandaloneDeriving #-}
+{-# LANGUAGE GADTs, LambdaCase, OverloadedStrings, StandaloneDeriving #-}
 
 module Language.RobotC.Data.Program
     ( Program, Prog
@@ -70,64 +70,51 @@ data Expr t where
 deriving instance Show (Expr t)
 
 instance (Num t, RType t) => Num (Expr t) where
-    Lit x + Lit y = Lit $ x + y
-    x + y = AddExpr x y
-    Lit x - Lit y = Lit $ x - y
-    x - y = SubExpr x y
-    Lit x * Lit y = Lit $ x * y
-    x * y = MultExpr x y
-    negate (Lit x) = Lit $ negate x
-    negate x = NegExpr x
-    abs (Lit x) = Lit $ abs x
-    abs x = Call1 "abs" x
-    signum (Lit x) = Lit $ signum x
-    signum x = Call1 "sgn" x
+    (+) = ifLit2 (+) AddExpr
+    (-) = ifLit2 (-) SubExpr
+    (*) = ifLit2 (*) MultExpr
+    negate = ifLit1 negate NegExpr
+    abs = ifLit1 abs $ Call1 "abs"
+    signum = ifLit1 signum $ Call1 "sgn"
     fromInteger = Lit . fromInteger
 
 instance (Fractional t, RType t) => Fractional (Expr t) where
-    Lit x / Lit y = Lit $ x / y
-    x / y = FracDivExpr x y
+    (/) = ifLit2 (/) FracDivExpr
     fromRational = Lit . fromRational
 
 instance (Floating t, RType t) => Floating (Expr t) where
     pi = Lit pi
-    exp (Lit x) = Lit $ exp x
-    exp x = Call1 "exp" x
-    log (Lit x) = Lit $ log x
-    log x = Call1 "log" x
-    sqrt (Lit x) = Lit $ sqrt x
-    sqrt x = Call1 "sqrt" x
-    Lit x ** Lit y = Lit $ x ** y
-    x ** y = Call2 "pow" x y
-    logBase (Lit b) (Lit x) = Lit $ logBase b x
-    logBase b x = log x / log b
-    sin (Lit x) = Lit $ sin x
-    sin x = Call1 "sin" x
-    cos (Lit x) = Lit $ cos x
-    cos x = Call1 "cos" x
-    tan (Lit x) = Lit $ tan x
-    tan x = Call1 "tan" x
-    asin (Lit x) = Lit $ asin x
-    asin x = Call1 "asin" x
-    acos (Lit x) = Lit $ acos x
-    acos x = Call1 "acos" x
-    atan (Lit x) = Lit $ atan x
-    atan x = Call1 "atan" x
-    sinh (Lit x) = Lit $ sinh x
-    sinh _ = error "sinh not yet implemented"
-    cosh (Lit x) = Lit $ cosh x
-    cosh _ = error "cosh not yet implemented"
-    tanh (Lit x) = Lit $ tanh x
-    tanh _ = error "tanh not yet implemented"
-    asinh (Lit x) = Lit $ asinh x
-    asinh _ = error "asinh not yet implemented"
-    acosh (Lit x) = Lit $ acosh x
-    acosh _ = error "acosh not yet implemented"
-    atanh (Lit x) = Lit $ atanh x
-    atanh _ = error "atanh not yet implemented"
+    exp = ifLit1 exp $ Call1 "exp"
+    log = ifLit1 log $ Call1 "log"
+    sqrt = ifLit1 sqrt $ Call1 "sqrt"
+    (**) = ifLit2 (**) $ Call2 "pow"
+    logBase = ifLit2 logBase $ \b x -> log x / log b
+    sin = ifLit1 sin $ Call1 "sin"
+    cos = ifLit1 cos $ Call1 "cos"
+    tan = ifLit1 tan $ Call1 "tan"
+    asin = ifLit1 asin $ Call1 "asin"
+    acos = ifLit1 acos $ Call1 "acos"
+    atan = ifLit1 atan $ Call1 "atan"
+    sinh = ifLit1 sinh $ const $ error "sinh not yet implemented"
+    cosh = ifLit1 cosh $ const $ error "cosh not yet implemented"
+    tanh = ifLit1 tanh $ const $ error "tanh not yet implemented"
+    asinh = ifLit1 asinh $ const $ error "asinh not yet implemented"
+    acosh = ifLit1 acosh $ const $ error "acosh not yet implemented"
+    atanh = ifLit1 atanh $ const $ error "atanh not yet implemented"
 
 instance (IsString t, RType t) => IsString (Expr t) where
     fromString = Lit . fromString
+
+ifLit1 :: (RType b) => (a -> b) -> (Expr a -> Expr b) -> Expr a -> Expr b
+ifLit1 lit notLit = \case
+    Lit x -> Lit $ lit x
+    x -> notLit x
+
+ifLit2 :: (RType c) =>
+    (a -> b -> c) -> (Expr a -> Expr b -> Expr c) -> Expr a -> Expr b -> Expr c
+ifLit2 lit notLit = curry $ \case
+    (Lit x, Lit y) -> Lit $ lit x y
+    (x, y) -> notLit x y
 
 data Var t where
     Var :: (RType t) => Ident -> Var t
