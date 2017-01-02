@@ -6,7 +6,7 @@ module Language.RobotC.Syntax
     , (.&&), (.||)
     , (.==), (!=), (.!=)
     , (.<), (.<=), (.>), (.>=)
-    , rdiv, rmod
+    , (//), (%)
     , (&), (.&), (.|), (.^)
     , (<<), (.<<), (.>>)
     , var, vari
@@ -14,7 +14,7 @@ module Language.RobotC.Syntax
     , (.:), (#:)
     , (.=), (#=)
     , (+=), (-=), (*=)
-    , divEq, modEq
+    , (//=), (%=)
     , (./=)
     , (&=), (|=), (^=), (<<=), (.<<=), (.>>=)
     , incr, decr
@@ -61,10 +61,10 @@ infix 4 .==, !=, .!=
 (.>=) = GTEqExpr
 infix 4 .<, .<=, .>, .>=
 
-rdiv, rmod :: (Integral t) => R t -> R t -> R t
-rdiv = IntDivExpr
-rmod = ModExpr
-infixl 7 `rdiv`, `rmod`
+(//), (%) :: (Integral t) => R t -> R t -> R t
+(//) = IntDivExpr
+(%) = ModExpr
+infixl 7 //, %
 
 (&), (.&), (.|), (.^), (<<), (.<<), (.>>) :: (Integral t) => R t -> R t -> R t
 (&) = BitAndExpr
@@ -111,10 +111,10 @@ infix 0 #=
 (*=) = prog2 MultAssign
 infix 0 +=, -=, *=
 
-divEq, modEq :: (Integral t) => Var t -> Expr t -> Prog
-divEq = prog2 IntDivAssign
-modEq = prog2 ModAssign
-infix 0 `divEq`, `modEq`
+(//=), (%=) :: (Integral t) => Var t -> Expr t -> Prog
+(//=) = prog2 IntDivAssign
+(%=) = prog2 ModAssign
+infix 0 //=, %=
 
 (./=) :: (Fractional t) => Var t -> R t -> Prog
 (./=) = prog2 FracDivAssign
