@@ -33,13 +33,13 @@ data Stmt where
     Call3v :: Ident -> Expr a -> Expr b -> Expr c -> Stmt
     Assign :: Var t -> Expr t -> Stmt
     IndexAssign :: IndexVar t -> Expr t -> Stmt
-    AddAssign, SubAssign, MultAssign :: (Num t) => Var t -> Expr t -> Stmt
-    IntDivAssign :: (Integral t) => Var t -> Expr t -> Stmt
-    FracDivAssign :: (Fractional t) => Var t -> Expr t -> Stmt
-    ModAssign :: (Integral t) => Var t -> Expr t -> Stmt
-    BitAndAssign, BitOrAssign, BitXorAssign :: (Integral t) => Var t -> Expr t -> Stmt
-    LShiftAssign, RShiftAssign :: (Integral t) => Var t -> Expr t -> Stmt
-    Incr, Decr :: (Num t) => Var t -> Stmt
+    AddAssign, SubAssign, MultAssign :: Num t => Var t -> Expr t -> Stmt
+    IntDivAssign :: Integral t => Var t -> Expr t -> Stmt
+    FracDivAssign :: Fractional t => Var t -> Expr t -> Stmt
+    ModAssign :: Integral t => Var t -> Expr t -> Stmt
+    BitAndAssign, BitOrAssign, BitXorAssign :: Integral t => Var t -> Expr t -> Stmt
+    LShiftAssign, RShiftAssign :: Integral t => Var t -> Expr t -> Stmt
+    Incr, Decr :: Num t => Var t -> Stmt
     Dec :: Var t -> Expr t -> Stmt
     ArrayDec :: ArrayVar t -> [Expr t] -> Stmt
     While :: Expr Bool -> Stmt -> Stmt
@@ -49,18 +49,18 @@ data Stmt where
 deriving instance Show Stmt
 
 data Expr t where
-    Lit :: (RType t) => t -> Expr t
+    Lit :: RType t => t -> Expr t
     NotExpr :: Expr Bool -> Expr Bool
     AndExpr, OrExpr :: Expr Bool -> Expr Bool -> Expr Bool
     EqExpr, NotEqExpr :: Expr t -> Expr t -> Expr Bool
-    LTExpr, LTEqExpr, GTExpr, GTEqExpr :: (Num t) => Expr t -> Expr t -> Expr Bool
-    AddExpr, SubExpr, MultExpr :: (Num t) => Expr t -> Expr t -> Expr t
-    IntDivExpr :: (Integral t) => Expr t -> Expr t -> Expr t
-    FracDivExpr :: (Fractional t) => Expr t -> Expr t -> Expr t
-    ModExpr :: (Integral t) => Expr t -> Expr t -> Expr t
-    NegExpr :: (Num t) => Expr t -> Expr t
-    BitAndExpr, BitOrExpr, BitXorExpr :: (Integral t) => Expr t -> Expr t -> Expr t
-    LShiftExpr, RShiftExpr :: (Integral t) => Expr t -> Expr t -> Expr t
+    LTExpr, LTEqExpr, GTExpr, GTEqExpr :: Num t => Expr t -> Expr t -> Expr Bool
+    AddExpr, SubExpr, MultExpr :: Num t => Expr t -> Expr t -> Expr t
+    IntDivExpr :: Integral t => Expr t -> Expr t -> Expr t
+    FracDivExpr :: Fractional t => Expr t -> Expr t -> Expr t
+    ModExpr :: Integral t => Expr t -> Expr t -> Expr t
+    NegExpr :: Num t => Expr t -> Expr t
+    BitAndExpr, BitOrExpr, BitXorExpr :: Integral t => Expr t -> Expr t -> Expr t
+    LShiftExpr, RShiftExpr :: Integral t => Expr t -> Expr t -> Expr t
     VarExpr :: Var t -> Expr t
     IndexVarExpr :: IndexVar t -> Expr t
     Call0 :: Ident -> Expr t
@@ -107,13 +107,12 @@ instance (Floating t, RType t) => Floating (Expr t) where
 instance (IsString t, RType t) => IsString (Expr t) where
     fromString = Lit . fromString
 
-ifLit1 :: (RType b) => (a -> b) -> (Expr a -> Expr b) -> Expr a -> Expr b
+ifLit1 :: RType b => (a -> b) -> (Expr a -> Expr b) -> Expr a -> Expr b
 ifLit1 lit notLit = \case
     Lit x -> Lit $ lit x
     x -> notLit x
 
-ifLit2 :: (RType c) =>
-    (a -> b -> c) -> (Expr a -> Expr b -> Expr c) -> Expr a -> Expr b -> Expr c
+ifLit2 :: RType c => (a -> b -> c) -> (Expr a -> Expr b -> Expr c) -> Expr a -> Expr b -> Expr c
 ifLit2 lit notLit = curry $ \case
     (Lit x, Lit y) -> Lit $ lit x y
     (x, y) -> notLit x y
@@ -123,19 +122,19 @@ data Var t where
 
 deriving instance Show (Var t)
 
-instance (RType t) => IsString (Var t) where
+instance RType t => IsString (Var t) where
     fromString = Var . mkIdent
 
 data ArrayVar t where
-    ArrayVar :: (RType t) => Ident -> ArrayVar t
+    ArrayVar :: RType t => Ident -> ArrayVar t
 
 deriving instance Show (ArrayVar t)
 
-instance (RType t) => IsString (ArrayVar t) where
+instance RType t => IsString (ArrayVar t) where
     fromString = ArrayVar . mkIdent
 
 data IndexVar t where
-    IndexVar :: (RType t, RIndex i) => ArrayVar t -> Expr i -> IndexVar t
+    IndexVar :: (RType t, Integral i) => ArrayVar t -> Expr i -> IndexVar t
 
 deriving instance Show (IndexVar t)
 

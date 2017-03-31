@@ -1,8 +1,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving, TypeSynonymInstances #-}
 
 module Language.RobotC.Data.Types
-    ( RType (..)
-    , RIndex
+    ( RType
     , Byte
     , UByte
     , Short
@@ -22,67 +21,33 @@ import Data.Int (Int8, Int16, Int32)
 import Data.String (IsString (..))
 import Data.Word
 
-import Language.RobotC.Data.Code
+class Show t => RType t
 
-class (Show t) => RType t where
-    genType :: a t -> Code
-
-class RIndex i where
-    _RIndex :: i
-    _RIndex = undefined
-
-instance RType Bool where
-    genType = const "bool"
+instance RType Bool
 
 type Byte = Int8
-
-instance RType Byte where
-    genType = const "byte"
-
-instance RIndex Byte
+instance RType Byte
 
 type UByte = Word8
-
-instance RType UByte where
-    genType = const "ubyte"
-
-instance RIndex UByte
+instance RType UByte
 
 type Short = Int16
-
-instance RType Short where
-    genType = const "short"
-
-instance RIndex Short
+instance RType Short
 
 type UShort = Word16
-
-instance RType UShort where
-    genType = const "unsigned short"
-
-instance RIndex UShort
+instance RType UShort
 
 type Int = Int32
-
-instance RType Int where
-    genType = const "int"
-
-instance RIndex Int
+instance RType Int
 
 type UInt = Word32
+instance RType UInt
 
-instance RType UInt where
-    genType = const "unsigned int"
-
-instance RIndex UInt
-
-instance RType Float where
-    genType = const "float"
+instance RType Float
 
 newtype String = String { unString :: P.String } deriving (Eq, Ord, Monoid, Show)
 
-instance RType String where
-    genType = const "string"
+instance RType String
 
 instance IsString String where
     fromString = mkString
@@ -106,10 +71,7 @@ data MotorPort
     | Motor10
     deriving (Eq, Ord, Enum, Bounded, Show)
 
-instance RType MotorPort where
-    genType = const "tMotor"
-
-instance RIndex MotorPort
+instance RType MotorPort
 
 data AnalogPort
     = Analog1
@@ -122,8 +84,7 @@ data AnalogPort
     | Analog8
     deriving (Eq, Ord, Enum, Bounded, Show)
 
-instance RType AnalogPort where
-    genType = const "tSensors"
+instance RType AnalogPort
 
 data DigitalPort
     = Digital1
@@ -140,5 +101,4 @@ data DigitalPort
     | Digital12
     deriving (Eq, Ord, Enum, Bounded, Show)
 
-instance RType DigitalPort where
-    genType = const "tSensors"
+instance RType DigitalPort
