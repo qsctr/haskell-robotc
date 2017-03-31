@@ -34,7 +34,7 @@ false = Lit False
 run :: R t -> Prog
 run = prog1 ExprStmt
 
-(#) :: (RType t, RIndex i) => ArrayVar t -> R i -> IndexVar t
+(#) :: (RType t, Integral i) => ArrayVar t -> R i -> IndexVar t
 (#) = IndexVar
 infix 9 #
 
