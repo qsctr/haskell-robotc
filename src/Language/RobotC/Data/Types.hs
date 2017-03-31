@@ -7,16 +7,19 @@ module Language.RobotC.Data.Types
     , UByte
     , Short
     , UShort
-    , RInt
+    , Int
     , UInt
-    , RString, mkRString, unRString
+    , String, mkString, unString
     , MotorPort (..)
     , AnalogPort (..)
     , DigitalPort (..)
     ) where
 
-import Data.Int
-import Data.String
+import Prelude hiding (Int, String)
+import qualified Prelude as P
+
+import Data.Int (Int8, Int16, Int32)
+import Data.String (IsString (..))
 import Data.Word
 
 import Language.RobotC.Data.Code
@@ -59,12 +62,12 @@ instance RType UShort where
 
 instance RIndex UShort
 
-type RInt = Int32
+type Int = Int32
 
-instance RType RInt where
+instance RType Int where
     genType = const "int"
 
-instance RIndex RInt
+instance RIndex Int
 
 type UInt = Word32
 
@@ -76,18 +79,18 @@ instance RIndex UInt
 instance RType Float where
     genType = const "float"
 
-newtype RString = RString { unRString :: String } deriving (Eq, Ord, Monoid, Show)
+newtype String = String { unString :: P.String } deriving (Eq, Ord, Monoid, Show)
 
-instance RType RString where
+instance RType String where
     genType = const "string"
 
-instance IsString RString where
-    fromString = mkRString
+instance IsString String where
+    fromString = mkString
 
-mkRString :: String -> RString
-mkRString s
+mkString :: P.String -> String
+mkString s
     | all ((`elem` [16..255]) . fromEnum) s
-    , length s <= 20 = RString s
+    , length s <= 20 = String s
     | otherwise = error $ show s ++ "is not a valid RobotC string; ASCII values for RobotC strings must be between 16 and 255, and the maximum length is 20"
 
 data MotorPort

@@ -11,10 +11,12 @@ module Language.RobotC.Data.Program
     , Ident, unIdent, mkIdent
     ) where
 
+import Prelude as P
+
 import Control.Monad.Trans.Writer
 import Data.String
 
-import Language.RobotC.Data.Types
+import Language.RobotC.Data.Types as R
 
 type Program = Writer [Stmt] ()
 type Prog = Program
@@ -137,12 +139,12 @@ data IndexVar t where
 
 deriving instance Show (IndexVar t)
 
-newtype Ident = Ident { unIdent :: String } deriving (Show)
+newtype Ident = Ident { unIdent :: P.String } deriving (Show)
 
 instance IsString Ident where
     fromString = mkIdent
 
-mkIdent :: String -> Ident
+mkIdent :: P.String -> Ident
 mkIdent (x:xs)
     | x `elem` '_' : ['A'..'Z'] ++ ['a'..'z']
     , all (`elem` '_' : ['A'..'Z'] ++ ['a'..'z'] ++ ['0'..'9']) xs = Ident (x:xs)
