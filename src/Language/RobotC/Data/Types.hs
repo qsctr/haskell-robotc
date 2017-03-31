@@ -91,7 +91,7 @@ mkString :: P.String -> String
 mkString s
     | all ((`elem` [16..255]) . fromEnum) s
     , length s <= 20 = String s
-    | otherwise = error $ show s ++ "is not a valid RobotC string; ASCII values for RobotC strings must be between 16 and 255, and the maximum length is 20"
+    | otherwise = error $ show s ++ " is not a valid RobotC string; ASCII values must be between 16 and 255, and the maximum length is 19"
 
 data MotorPort
     = Motor1
