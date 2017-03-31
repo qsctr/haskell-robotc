@@ -31,8 +31,8 @@ true, false :: R Bool
 true = Lit True
 false = Lit False
 
-run :: R t -> Prog
-run = prog1 ExprStmt
+run :: R t -> RobotC
+run = robotC1 ExprStmt
 
 (#) :: (RType t, Integral i) => ArrayVar t -> R i -> IndexVar t
 (#) = IndexVar
@@ -89,55 +89,55 @@ vari = IndexVarExpr
 (?) = CondExpr
 infixr 1 ?
 
-(.:) :: Var t -> R t -> Prog
-(.:) = prog2 Dec
+(.:) :: Var t -> R t -> RobotC
+(.:) = robotC2 Dec
 infix 0 .:
 
-(#:) :: ArrayVar t -> [R t] -> Prog
-(#:) = prog2 ArrayDec
+(#:) :: ArrayVar t -> [R t] -> RobotC
+(#:) = robotC2 ArrayDec
 infix 0 #:
 
-(.=) :: Var t -> R t -> Prog
-(.=) = prog2 Assign
+(.=) :: Var t -> R t -> RobotC
+(.=) = robotC2 Assign
 infix 0 .=
 
-(#=) :: IndexVar t -> R t -> Prog
-(#=) = prog2 IndexAssign
+(#=) :: IndexVar t -> R t -> RobotC
+(#=) = robotC2 IndexAssign
 infix 0 #=
 
-(+=), (-=), (*=) :: (Num t) => Var t -> R t -> Prog
-(+=) = prog2 AddAssign
-(-=) = prog2 SubAssign
-(*=) = prog2 MultAssign
+(+=), (-=), (*=) :: (Num t) => Var t -> R t -> RobotC
+(+=) = robotC2 AddAssign
+(-=) = robotC2 SubAssign
+(*=) = robotC2 MultAssign
 infix 0 +=, -=, *=
 
-(//=), (%=) :: (Integral t) => Var t -> Expr t -> Prog
-(//=) = prog2 IntDivAssign
-(%=) = prog2 ModAssign
+(//=), (%=) :: (Integral t) => Var t -> Expr t -> RobotC
+(//=) = robotC2 IntDivAssign
+(%=) = robotC2 ModAssign
 infix 0 //=, %=
 
-(./=) :: (Fractional t) => Var t -> R t -> Prog
-(./=) = prog2 FracDivAssign
+(./=) :: (Fractional t) => Var t -> R t -> RobotC
+(./=) = robotC2 FracDivAssign
 infix 0 ./=
 
-(&=), (|=), (^=), (<<=), (.<<=), (.>>=) :: (Integral t) => Var t -> R t -> Prog
-(&=) = prog2 BitAndAssign
-(|=) = prog2 BitOrAssign
-(^=) = prog2 BitXorAssign
-(<<=) = prog2 LShiftAssign
+(&=), (|=), (^=), (<<=), (.<<=), (.>>=) :: (Integral t) => Var t -> R t -> RobotC
+(&=) = robotC2 BitAndAssign
+(|=) = robotC2 BitOrAssign
+(^=) = robotC2 BitXorAssign
+(<<=) = robotC2 LShiftAssign
 (.<<=) = (<<=)
-(.>>=) = prog2 RShiftAssign
+(.>>=) = robotC2 RShiftAssign
 infix 0 &=, |=, ^=, <<=, .<<=, .>>=
 
-incr, decr :: (Num t) => Var t -> Prog
-incr = prog1 Incr
-decr = prog1 Decr
+incr, decr :: (Num t) => Var t -> RobotC
+incr = robotC1 Incr
+decr = robotC1 Decr
 
-while :: R Bool -> Prog -> Prog
-while = liftProg1 . While
+while :: R Bool -> RobotC -> RobotC
+while = liftRobotC1 . While
 
-rif :: R Bool -> Prog -> Prog
-rif = liftProg1 . If
+rif :: R Bool -> RobotC -> RobotC
+rif = liftRobotC1 . If
 
-rifelse :: R Bool -> Prog -> Prog -> Prog
-rifelse = liftProg2 . IfElse
+rifelse :: R Bool -> RobotC -> RobotC -> RobotC
+rifelse = liftRobotC2 . IfElse

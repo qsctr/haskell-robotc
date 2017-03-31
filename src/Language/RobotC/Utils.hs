@@ -6,39 +6,39 @@ import Control.Monad.Trans.Writer
 
 import Language.RobotC.Data.Program
 
-prog :: Stmt -> Prog
-prog = tell . return
+robotC :: Stmt -> RobotC
+robotC = tell . return
 
-prog1 :: (a -> Stmt) -> a -> Prog
-prog1 f = prog . f
+robotC1 :: (a -> Stmt) -> a -> RobotC
+robotC1 f = robotC . f
 
-prog2 :: (a -> b -> Stmt) -> a -> b -> Prog
-prog2 f = prog1 . f
+robotC2 :: (a -> b -> Stmt) -> a -> b -> RobotC
+robotC2 f = robotC1 . f
 
-prog3 :: (a -> b -> c -> Stmt) -> a -> b -> c -> Prog
-prog3 f = prog2 . f
+robotC3 :: (a -> b -> c -> Stmt) -> a -> b -> c -> RobotC
+robotC3 f = robotC2 . f
 
-prog4 :: (a -> b -> c -> d -> Stmt) -> a -> b -> c -> d -> Prog
-prog4 f = prog3 . f
+robotC4 :: (a -> b -> c -> d -> Stmt) -> a -> b -> c -> d -> RobotC
+robotC4 f = robotC3 . f
 
-liftProg1 :: (Stmt -> Stmt) -> Prog -> Prog
-liftProg1 f = prog1 $ f . unProg
+liftRobotC1 :: (Stmt -> Stmt) -> RobotC -> RobotC
+liftRobotC1 f = robotC1 $ f . unRobotC
 
-liftProg2 :: (Stmt -> Stmt -> Stmt) -> Prog -> Prog -> Prog
-liftProg2 f = prog2 $ \x y -> f (unProg x) (unProg y)
+liftRobotC2 :: (Stmt -> Stmt -> Stmt) -> RobotC -> RobotC -> RobotC
+liftRobotC2 f = robotC2 $ \x y -> f (unRobotC x) (unRobotC y)
 
-unProg :: Prog -> Stmt
-unProg (execWriter -> [x]) = x
-unProg (execWriter -> xs) = Block xs
+unRobotC :: RobotC -> Stmt
+unRobotC (execWriter -> [x]) = x
+unRobotC (execWriter -> xs) = Block xs
 
-call0v :: Ident -> Prog
-call0v = prog1 Call0v
+call0v :: Ident -> RobotC
+call0v = robotC1 Call0v
 
-call1v :: Ident -> R a -> Prog
-call1v = prog2 Call1v
+call1v :: Ident -> R a -> RobotC
+call1v = robotC2 Call1v
 
-call2v :: Ident -> R a -> R b -> Prog
-call2v = prog3 Call2v
+call2v :: Ident -> R a -> R b -> RobotC
+call2v = robotC3 Call2v
 
-call3v :: Ident -> R a -> R b -> R c -> Prog
-call3v = prog4 Call3v
+call3v :: Ident -> R a -> R b -> R c -> RobotC
+call3v = robotC4 Call3v

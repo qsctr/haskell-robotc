@@ -16,8 +16,7 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Language.RobotC
-  other-modules:       Language.RobotC.Data.Code
-                     , Language.RobotC.Data.Config
+  other-modules:       Language.RobotC.Data.Config
                      , Language.RobotC.Data.Program
                      , Language.RobotC.Data.Types
                      , Language.RobotC.Syntax

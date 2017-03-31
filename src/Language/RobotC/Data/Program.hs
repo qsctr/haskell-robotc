@@ -1,8 +1,8 @@
 {-# LANGUAGE GADTs, LambdaCase, OverloadedStrings, StandaloneDeriving #-}
 
 module Language.RobotC.Data.Program
-    ( Program, Prog
-    , RobotC, R
+    ( RobotC
+    , R
     , Stmt (..)
     , Expr (..)
     , Var (..)
@@ -18,11 +18,8 @@ import Data.String
 
 import Language.RobotC.Data.Types as R
 
-type Program = Writer [Stmt] ()
-type Prog = Program
-
-type RobotC = Expr
-type R = RobotC
+type RobotC = Writer [Stmt] ()
+type R = Expr
 
 data Stmt where
     ExprStmt :: Expr t -> Stmt
